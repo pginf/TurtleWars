@@ -6,13 +6,13 @@ from utils import Vector2D
 class GameObject:
     _position: Vector2D
     _scale: Vector2D
-    _rotation: Vector2D
+    _rotation: float
     _group: GameObjectGroup = GameObjectGroup.NONE
 
     def __init__(self):
         self._position = Vector2D(0, 0)
         self._scale = Vector2D(1, 1)
-        self._rotation = Vector2D(0, 0)
+        self._rotation = 0
 
     def set_position(self, position: Vector2D):
         self._position = position
@@ -26,7 +26,7 @@ class GameObject:
     def get_scale(self):
         return self._scale
 
-    def set_rotation(self, rotation: Vector2D):
+    def set_rotation(self, rotation: float):
         self._rotation = rotation
 
     def get_rotation(self):
