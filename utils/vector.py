@@ -57,3 +57,5 @@ if __name__ == "__main__":
     point2 = Vector2D(20, 21)
 
     print(point * point2)
+    print(point + 1)
+    print(point + point2)
