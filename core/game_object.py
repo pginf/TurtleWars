@@ -36,4 +36,4 @@ class GameObject:
         return other_game_object._group == self._group
 
     def is_of_group(self, group: GameObjectGroup):
-        return  self._group == group
+        return self._group == group
