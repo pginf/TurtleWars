@@ -31,3 +31,9 @@ class GameObject:
 
     def get_rotation(self):
         return self._rotation
+
+    def comepre_group(self, other_game_object: GameObject):
+        return other_game_object._group == self._group
+
+    def is_of_group(self, group: GameObjectGroup):
+        return  self._group == group
