@@ -1,5 +1,6 @@
 from __future__ import annotations
 from core import GameObjectGroup
+import core.components_handler
 from utils import Vector2D
 
 
@@ -9,10 +10,19 @@ class GameObject:
     _rotation: Vector2D
     _group: GameObjectGroup = GameObjectGroup.NONE
 
+    _components_handler: core.components_handler.ComponentsHandler
+
     def __init__(self):
+        self._components_handler = core.components_handler.ComponentsHandler(self)
         self._position = Vector2D(0, 0)
         self._scale = Vector2D(1, 1)
         self._rotation = Vector2D(0, 0)
+
+    def setup(self):
+        self._components_handler.setup()
+
+    def update(self):
+        self._components_handler.update()
 
     def set_position(self, position: Vector2D):
         self._position = position
