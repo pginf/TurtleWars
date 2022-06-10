@@ -9,6 +9,8 @@ class GameObject:
     _scale: Vector2D
     _rotation: float
     _group: GameObjectGroup = GameObjectGroup.NONE
+    _name: str = "New game object"
+    _exist: bool
 
     _components_handler: core.components_handler.ComponentsHandler
 
@@ -42,8 +44,26 @@ class GameObject:
     def get_rotation(self):
         return self._rotation
 
+    def set_group(self, group: GameObjectGroup):
+        self._group = group
+
+    def get_group(self):
+        return self._group
+
     def comepre_group(self, other_game_object: GameObject):
         return other_game_object._group == self._group
 
     def is_of_group(self, group: GameObjectGroup):
         return self._group == group
+
+    def set_name(self, name: str):
+        self._name = name
+
+    def get_name(self):
+        return self._name
+
+    def exist(self):
+        return self._exist
+
+    def set_exist(self, existence: bool):
+        self._exist = existence
