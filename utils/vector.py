@@ -39,6 +39,13 @@ class Vector2D:
             temp: Vector2D = Vector2D(self.x * other, self.y * other)
         return temp
 
+    def __truediv__(self, other):
+        if isinstance(other, Vector2D):
+            temp: Vector2D = Vector2D(self.x / other.x, self.y / other.y)
+        else:
+            temp: Vector2D = Vector2D(self.x / other, self.y / other)
+        return temp
+
     def __neg__(self):
         temp: Vector2D = Vector2D(-self.x, -self.y)
         return temp
