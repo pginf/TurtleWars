@@ -39,7 +39,6 @@ class Game:
             self._time_now = time.time()
             self._delta_time = self._time_now - self._time_prev
             self._time_prev = self._time_now
-            print(self._delta_time)
 
             self.event_handler.hanlde_events()
             self._main_window.update()
