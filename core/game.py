@@ -35,8 +35,6 @@ class Game:
         self._time_now = time.time()
         self._time_prev = time.time()
         while self._run:
-            # Limit framerate
-            self._clock.tick(60)
             # Compute delta time
             self._time_now = time.time()
             self._delta_time = self._time_now - self._time_prev
@@ -47,6 +45,9 @@ class Game:
             self._main_window.update()
             self._main_window.draw()
             self.game_objects.objects_update()
+
+            # Limit framerate
+            self._clock.tick(60)
 
     @classmethod
     def instance(cls) -> Game:
