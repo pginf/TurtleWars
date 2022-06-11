@@ -15,6 +15,7 @@ class Game:
     _delta_time: float
     _time_now: float
     _time_prev: float
+    _time_game: float
 
     _FPS_LIMIT = 60
     _clock = pygame.time.Clock()
@@ -34,11 +35,14 @@ class Game:
     def loop(self):
         self._time_now = time.time()
         self._time_prev = time.time()
+        self._time_game = 0
         while self._run:
             # Compute delta time
             self._time_now = time.time()
             self._delta_time = self._time_now - self._time_prev
             self._time_prev = self._time_now
+            # Compute time
+            self._time_game += self._delta_time
 
             self.event_handler.hanlde_events()
             self._main_window.update()
@@ -59,3 +63,7 @@ class Game:
     @property
     def delta_time(self):
         return self._delta_time
+
+    @property
+    def time(self):
+        return self._time_game
