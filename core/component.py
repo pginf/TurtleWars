@@ -11,7 +11,7 @@ class Component(ABC):
     _parent: GameObject
 
     def __init__(self, parent: GameObject):
-        self.parent = parent
+        self._parent = parent
 
     @abstractmethod
     def setup(self):
