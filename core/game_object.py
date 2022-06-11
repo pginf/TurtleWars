@@ -76,6 +76,3 @@ class GameObject:
 
     def set_exist(self, existence: bool):
         self._exist = existence
-
-    def chuj(self):
-        return self._components_handler
