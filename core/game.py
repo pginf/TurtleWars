@@ -12,9 +12,9 @@ class Game:
     _run = True
     _instance: Game = None
 
-    _delta_time: float = 0
-    _time_now: float = 0
-    _time_prev: float = 0
+    _delta_time: float
+    _time_now: float
+    _time_prev: float
 
     _FPS_LIMIT = 60
     _clock = pygame.time.Clock()
@@ -32,6 +32,8 @@ class Game:
         self._run = False
 
     def loop(self):
+        self._time_now = time.time()
+        self._time_prev = time.time()
         while self._run:
             # Limit framerate
             self._clock.tick(60)
