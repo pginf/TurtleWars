@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import random
 
+from core import Game
 from core.game_object import GameObject
 from utils.vector import Vector2D
 from . import Component
@@ -25,25 +26,23 @@ class MovementComponent(Component):
         position: Vector2D = self._parent.get_position()
         rotation: float = self._parent.get_rotation()
 
-        self._parent.set_position(position + self.velocity)
-        self._parent.set_rotation(rotation + self.spin)
+        time = Game.instance().delta_time
+
+        if time > 1:
+            return
+        self._parent.set_position(position + self.velocity * time)
+        self._parent.set_rotation(rotation + self.spin * time)
+
         self.velocity += self.acceleration
         self.acceleration = self.force / self.mass
 
-        if self.velocity.x > 0:
-            self.velocity.x -= self.movement_friction
-        elif self.velocity.x < 0:
-            self.velocity.x += self.movement_friction
+        self.velocity -= self.velocity * self.mass * self.movement_friction * time
 
-        if self.velocity.y > 0:
-            self.velocity.y -= self.movement_friction
-        elif self.velocity.y < 0:
-            self.velocity.y += self.movement_friction
+        if 1 > self.velocity.x > - 1:
+            self.velocity.x = 0
 
-        if self.spin > 0:
-            self.spin -= self.spinning_friction
-        elif self.spin < 0:
-            self.spin += self.spinning_friction
+        if 1 > self.velocity.y > - 1:
+            self.velocity.y = 0
 
     def force_blow(self, force: Vector2D):
         self.velocity = force / self.mass
