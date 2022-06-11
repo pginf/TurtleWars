@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+from typing import Type, Optional
+
 from core import GameObjectGroup
 import core.components_handler
 from utils import Vector2D
@@ -19,6 +22,12 @@ class GameObject:
         self._position = Vector2D(0, 0)
         self._scale = Vector2D(1, 1)
         self._rotation = 0
+
+    def add_component(self, component: Type[core.Component]):
+        self._components_handler.add_component(component)
+
+    def get_component(self, component: Type[core.Component]) -> Optional[core.Component]:
+        return self._components_handler.get_component(component)
 
     def setup(self):
         self._components_handler.setup()

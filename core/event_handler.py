@@ -15,7 +15,7 @@ class EventHandler:
     def hanlde_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                core.Game.get_instance().stop()
+                core.Game.instance().stop()
 
     @classmethod
     def get_instance(cls):
