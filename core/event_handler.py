@@ -8,6 +8,8 @@ import core
 class EventHandler:
     _intance: EventHandler = None
 
+
+
     def __init__(self):
         if not EventHandler._intance:
             EventHandler._intance = self
