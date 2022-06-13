@@ -50,17 +50,37 @@ if __name__ == "__main__":
 
     window = MainWindow.get_instance()
 
-    objs = [GameObject() for i in range(1)]
-    for i, a in enumerate(objs):
-        a.set_position(Vector2D(50, window.HEIGHT / len(objs) * (i + 1)))
-        a.add_component(VisibleComponent)
-        a.add_component(MovementComponent)
-        a.setup()
+    a = GameObject()
+    a.set_position(Vector2D(window.WIDTH/2, 200))
+    a.add_component(VisibleComponent)
+    a.add_component(MovementComponent)
+    a.setup()
 
-        mc: MovementComponent = a.get_component(MovementComponent)
-        mc.movement_friction = 0
-        mc.velocity = Vector2D(10, 0)
+    a.set_scale(Vector2D(2, 2))
+    a.set_scale(Vector2D(3, 3))
 
-        game.game_objects.add_object_to_group(a)
+    game.game_objects.add_object_to_group(a)
+
+    b = GameObject()
+    b.set_position(Vector2D(window.WIDTH / 2, 400))
+    b.add_component(VisibleComponent)
+    b.add_component(MovementComponent)
+    b.setup()
+
+    b.set_scale(Vector2D(3, 3))
+    b.set_scale(Vector2D(2, 2))
+
+    game.game_objects.add_object_to_group(b)
+
+    mca: MovementComponent = a.get_component(MovementComponent)
+    mca.spin_blow(200)
+    mca.spinning_friction = 300
+    mca.force_blow(Vector2D(300, 0))
+    mca.movement_friction = 1
+
+    mcb: MovementComponent = b.get_component(MovementComponent)
+    mcb.spin = -200
+
+
 
     game.loop()
