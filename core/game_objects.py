@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-
 import pygame.sprite
 
 from core import MainWindow
@@ -51,7 +50,7 @@ if __name__ == "__main__":
     window = MainWindow.get_instance()
 
     a = GameObject()
-    a.set_position(Vector2D(window.WIDTH/2, 200))
+    a.set_position(Vector2D(window.WIDTH / 2, 200))
     a.add_component(VisibleComponent)
     a.add_component(MovementComponent)
     a.setup()
@@ -73,14 +72,17 @@ if __name__ == "__main__":
     game.game_objects.add_object_to_group(b)
 
     mca: MovementComponent = a.get_component(MovementComponent)
-    mca.spin_blow(200)
-    mca.spinning_friction = 300
-    mca.force_blow(Vector2D(300, 0))
-    mca.movement_friction = 1
+    mca.spin_blow(-200)
+    mca.set_mass(1)
+    mca.set_spinning_friction(1)
+    mca.force_blow(Vector2D(100, 0))
+    # mca.set_force(Vector2D(100, 0))
+    # mca.set_max_velocity(100)
+    mca.set_movement_friction(0.1)
+    # mca.force = Vector2D(100, 0)
 
     mcb: MovementComponent = b.get_component(MovementComponent)
-    mcb.spin = -200
-
-
+    mcb.set_spin(200)
+    mcb.set_spinning_friction(1)
 
     game.loop()
