@@ -22,6 +22,7 @@ class GameObject:
         self._position = Vector2D(0, 0)
         self._scale = Vector2D(1, 1)
         self._rotation = 0
+        self._exist = True
 
     def add_component(self, component: Type[core.Component]):
         self._components_handler.add_component(component)
