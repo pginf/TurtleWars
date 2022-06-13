@@ -32,6 +32,7 @@ class MovementComponent(Component):
 
         if delta_time > 1:
             return
+
         self._parent.set_position(
             position + self.__velocity * delta_time + self.__acceleration * delta_time * delta_time / 2)
         self._parent.set_rotation(rotation + self.__spin * delta_time)
