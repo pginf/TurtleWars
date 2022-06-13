@@ -38,6 +38,7 @@ class GameObjects:
         for group in GameObjectGroup:
             for obj in self._mappings_of_groups[group]:
                 obj.update()
+        for group in reversed(GameObjectGroup):
             self._sprites_groups[group].draw(MainWindow.get_instance().get_surface())
 
 
