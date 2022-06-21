@@ -27,16 +27,26 @@ class GameObjects:
 
     def delete_objects(self):
         for group in GameObjectGroup:
-            self._mappings_of_groups[group] = list(
-                filter(lambda game_object: game_object.exist(), self._mappings_of_groups[group]))
+            for obj in self._mappings_of_groups[group]:
+                if not obj.exist():
+                    self._mappings_of_groups[group].remove(obj)
+                    vs_comp: VisibleComponent = obj.get_component(VisibleComponent)
+                    if vs_comp:
+                        vs_comp.sprite.kill()
 
-    def get_object_from_group(self, group: GameObjectGroup, index: int):
+    def get_object(self, group: GameObjectGroup, index: int):
         return self._mappings_of_groups[group][index]
+
+    def get_group_length(self, group: GameObjectGroup):
+        return len(self._mappings_of_groups[group])
 
     def objects_update(self):
         for group in GameObjectGroup:
             for obj in self._mappings_of_groups[group]:
-                obj.update()
+                if obj.exist():
+                    obj.update()
+        self.delete_objects()
+        for group in reversed(GameObjectGroup):
             self._sprites_groups[group].draw(MainWindow.get_instance().get_surface())
 
 
@@ -45,30 +55,29 @@ if __name__ == "__main__":
     from core import EventHandler
     from utils import Vector2D
     from components.movement_component import MovementComponent
+    from components import BoxCollider
 
     game = Game()
 
     window = MainWindow.get_instance()
 
     a = GameObject()
+    a.set_name("o1")
     a.set_position(Vector2D(window.WIDTH/2, 200))
     a.add_component(VisibleComponent)
     a.add_component(MovementComponent)
+    a.add_component(BoxCollider)
     a.setup()
-
-    a.set_scale(Vector2D(2, 2))
-    a.set_scale(Vector2D(3, 3))
 
     game.game_objects.add_object_to_group(a)
 
     b = GameObject()
+    b.set_name("o2")
     b.set_position(Vector2D(window.WIDTH / 2, 400))
     b.add_component(VisibleComponent)
     b.add_component(MovementComponent)
+    b.add_component(BoxCollider)
     b.setup()
-
-    b.set_scale(Vector2D(3, 3))
-    b.set_scale(Vector2D(2, 2))
 
     game.game_objects.add_object_to_group(b)
 
@@ -88,7 +97,7 @@ if __name__ == "__main__":
     mca: MovementComponent = a.get_component(MovementComponent)
     mca.spin_blow(200)
     mca.spinning_friction = 300
-    mca.force_blow(Vector2D(300, 0))
+    mca.force_blow(Vector2D(0, 200))
     mca.movement_friction = 1
 
     mcb: MovementComponent = b.get_component(MovementComponent)
