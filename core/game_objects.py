@@ -9,7 +9,6 @@ from core import GameObject
 from typing import Dict, List
 from components import VisibleComponent
 
-
 class GameObjects:
     _mappings_of_groups: Dict[GameObjectGroup, List[GameObject]] = {}
     _sprites_groups: Dict[GameObjectGroup, pygame.sprite.Group] = {}
@@ -43,6 +42,7 @@ class GameObjects:
 
 if __name__ == "__main__":
     from core import Game
+    from core import EventHandler
     from utils import Vector2D
     from components.movement_component import MovementComponent
 
@@ -71,6 +71,19 @@ if __name__ == "__main__":
     b.set_scale(Vector2D(2, 2))
 
     game.game_objects.add_object_to_group(b)
+
+    class AA:
+        def on_click(self, result: EventHandler.OnMousePressArgs):
+            print(result.x)
+            print(result.y)
+
+        def on_key_press(self, result: EventHandler.OnKeyboardPressArgs):
+            print(result.key_pressed)
+
+    EventHandler.get_instance().on_mouse_press.add(AA().on_click)
+    EventHandler.get_instance().on_mouse_press.add(AA().on_click)
+    EventHandler.get_instance().on_keyboard_press.add(AA().on_key_press)
+
 
     mca: MovementComponent = a.get_component(MovementComponent)
     mca.spin_blow(200)
