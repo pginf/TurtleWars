@@ -76,3 +76,7 @@ class GameObject:
 
     def set_exist(self, existence: bool):
         self._exist = existence
+
+    def destroy(self):
+        self.set_exist(False)
+
