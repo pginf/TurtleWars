@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from math import sqrt
 
 
@@ -11,12 +12,21 @@ class Vector2D:
         self.x = x
         self.y = y
 
+    def angle_to(self, other: Vector2D):
+        vector = self-other
+        return math.atan2(vector.y, vector.x)
+
     def set_location(self, x: float, y: float):
         self.x = x
         self.y = y
 
     def distance(self, other: Vector2D):
-        return sqrt(pow(other.x - self.x, 2) + pow(other.y - self.y, 2))
+        x_dis = other.x - self.x
+        y_dis = other.y - self.y
+        return sqrt(pow(x_dis, 2) + pow(y_dis, 2))
+
+    def dot(self):
+        return self.x + self.y
 
     def __add__(self, other):
         if isinstance(other, Vector2D):

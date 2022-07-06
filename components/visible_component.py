@@ -32,6 +32,8 @@ class VisibleComponent(Component):
         self._sprite.image = self._image
         self._sprite.rect = self.sprite.image.get_rect()
         self._sprite.image.fill(self._DEFAULT_COLOR)
+        self.get_parent().on_scale_change.add(self.set_scale)
+        self.get_parent().on_rotation_change.add(self.set_rotation)
 
     def set_image_name(self, name_of_image: str):
         self._image = pygame.image.load(name_of_image).convert()
@@ -49,32 +51,30 @@ class VisibleComponent(Component):
         self._sprite.rect = self.sprite.image.get_rect()
 
     def update(self):
-        if self._auto_update:
-            if self._rotation != self.get_parent().get_rotation():
-                self.set_rotation(self.get_parent().get_rotation())
-            if self._scale != self.get_parent().get_scale():
-                self.set_scale(self.get_parent().get_scale())
-        if self._auto_pos:
-            self._sprite.rect.center = [self.get_parent().get_position().x, self.get_parent().get_position().y]
         if self._centre_show:
             pygame.draw.circle(self._sprite.image, self._CENTRE_COLOR, self._sprite.rect.center, self._CENTRE_SIZE)
+        self._update_rect()
 
     def set_size(self, v: Vector2D):
         self._sprite.image = pygame.transform.scale(self._sprite.image, (v.x, v.y))
         self._height = v.y
         self._width = v.x
         self._sprite.rect = self.sprite.image.get_rect()
+        self._update_rect()
 
     def set_scale(self, scale: Vector2D):
         self._scale = scale
         self._image = pygame.transform.scale(self._image, (self._width * scale.x, self._height * scale.y))
         self._sprite.image = self._image
         self._sprite.rect = self.sprite.image.get_rect()
+        self._update_rect()
 
     def set_rotation(self, angle: float):
-        self._rotation = angle
-        self._sprite.image = pygame.transform.rotate(self._image, angle)
-        self._sprite.rect = self._sprite.image.get_rect()
+        if isinstance(angle, float):
+            self._rotation = angle
+            self._sprite.image = pygame.transform.rotate(self._image, angle)
+            self._sprite.rect = self._sprite.image.get_rect()
+            self._update_rect()
 
     def get_height(self):
         return self._height
@@ -90,6 +90,10 @@ class VisibleComponent(Component):
 
     def set_centre_visible(self, value: bool):
         self._centre_show = value
+
+    def _update_rect(self):
+        if self._auto_pos:
+            self._sprite.rect.center = [self.get_parent().get_position().x, self.get_parent().get_position().y]
 
     @property
     def sprite(self):
