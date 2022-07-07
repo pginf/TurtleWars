@@ -13,6 +13,7 @@ from core import GameObject
 from typing import List, Tuple
 from utils import Vector2D
 from math import sin, cos, radians
+from core.event import Event
 
 
 class Collider(Component):
@@ -24,11 +25,15 @@ class Collider(Component):
     _auto_positioning = True
     _collider_visible = True
     _collision_list: List[Tuple[GameObject, float]]
+    _on_collision_enter: Event[List[Tuple[GameObject, float]]]
 
     def setup(self):
         self._collision_list = []
         self._points = []
         self._base_angle = radians(360 / (self.num_of_points * 2))
+
+        # Adding publishers
+        self._on_collision_enter = Event()
 
         # Adding subscribers
         self.get_parent().on_position_change.add(self._set_position)
@@ -145,6 +150,8 @@ class Collider(Component):
                         self._collision_list.append((other_collider.get_parent(), collision_result))
                     else:
                         self._collision_list.append((other_collider.get_parent(), 0))
+        if len(self._collision_list) > 0:
+            self._on_collision_enter.invoke(self._collision_list)
 
     def get_collisions(self):
         return self._collision_list
@@ -167,3 +174,8 @@ class Collider(Component):
     @property
     def num_of_points(self):
         return self._num_of_points
+
+    @property
+    def on_collision_enter(self):
+        return self._on_collision_enter
+
