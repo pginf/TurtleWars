@@ -25,6 +25,9 @@ class Vector2D:
         y_dis = other.y - self.y
         return sqrt(pow(x_dis, 2) + pow(y_dis, 2))
 
+    def length(self):
+        return sqrt(pow(self.x, 2) + pow(self.y, 2))
+
     def dot(self):
         return self.x + self.y
 

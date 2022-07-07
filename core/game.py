@@ -44,7 +44,7 @@ class Game:
             # Compute time
             self._time_game += self._delta_time
 
-            self.event_handler.hanlde_events()
+            self.event_handler.handle_events()
             self._main_window.update()
             self._main_window.draw()
             self.game_objects.objects_update()

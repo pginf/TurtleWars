@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+import numbers
 
 import pygame.rect
 
@@ -9,24 +10,25 @@ from core import Component
 from core import Game
 from core import GameObjectGroup
 from core import GameObject
-from typing import List
+from typing import List, Tuple
 from utils import Vector2D
 from math import sin, cos, radians
 
 
 class Collider(Component):
-    _num_of_points = 6  # for testing
+    _num_of_points = 4  # for testing
     _points: List[Vector2D]
     _center: Vector2D
     _rotation: float
-    _base_angle = radians(45)
+    _base_angle: float
     _auto_positioning = True
     _collider_visible = True
-    _collision_list: List[GameObject]
+    _collision_list: List[Tuple[GameObject, float]]
 
     def setup(self):
         self._collision_list = []
         self._points = []
+        self._base_angle = radians(360 / (self.num_of_points * 2))
 
         # Adding subscribers
         self.get_parent().on_position_change.add(self._set_position)
@@ -59,10 +61,10 @@ class Collider(Component):
         self._center = self.get_center() + vector
 
     def _set_rotation(self, angle: float):
-        self._rotation = self.get_parent().get_rotation()
+        self._rotation = angle
         for i in range(self.num_of_points):
             point = self._points[i]
-            rot = radians((i * 360/self.num_of_points) + self.get_parent().get_rotation())
+            rot = radians((i * 360/self.num_of_points) + angle)
             length = point.distance(self._center)
             point.x = length * sin(self._base_angle + rot) + self._center.x
             point.y = length * cos(self._base_angle + rot) + self._center.y
@@ -88,6 +90,29 @@ class Collider(Component):
             return True
         return False
 
+    def _check_collision_static(self, col_a: Collider, col_b: Collider):
+        if col_a != col_b:
+            overlap = math.inf
+            collider_a = col_a
+            collider_b = col_b
+            for j in range(2):
+                if j == 1:
+                    collider_a, collider_b = collider_b, collider_a
+                for i in range(collider_a.num_of_points):
+                    v1 = collider_a.get_points()[i]
+                    v2 = collider_a.get_points()[(i+1) % collider_a.num_of_points]
+
+                    edge = v2 - v1
+                    axis = Vector2D(-edge.y, edge.x)
+                    min_a, max_a = self._project_vertices(collider_a.get_points(), axis)
+                    min_b, max_b = self._project_vertices(collider_b.get_points(), axis)
+                    overlap = min((min(max_a, max_b) - max(min_a, min_b)), overlap)
+
+                    if min_a >= max_b or min_b >= max_a:
+                        return None
+            return overlap
+        return None
+
     def _draw_collider(self):
         for i in range(self.num_of_points):
             point_s = self._points[i]
@@ -102,10 +127,9 @@ class Collider(Component):
         for ver in vertices:
             proj = (ver*axis).dot()
 
-            if proj < min_proj:
-                min_proj = proj
-            if proj > max_proj:
-                max_proj = proj
+            min_proj = min(proj, min_proj)
+            max_proj = max(proj, max_proj)
+
         return min_proj, max_proj
 
     def check_collisions(self):
@@ -115,8 +139,12 @@ class Collider(Component):
             for index in range(game.game_objects.get_group_length(group)):
                 other_collider = game.game_objects.get_object(group, index).get_component(Collider)
                 self_collider = self
-                if self._check_collision(self_collider, other_collider):
-                    self._collision_list.append(other_collider.get_parent())
+                collision_result = self._check_collision_static(self_collider, other_collider)
+                if collision_result:
+                    if isinstance(collision_result, numbers.Number):
+                        self._collision_list.append((other_collider.get_parent(), collision_result))
+                    else:
+                        self._collision_list.append((other_collider.get_parent(), 0))
 
     def get_collisions(self):
         return self._collision_list
@@ -139,7 +167,3 @@ class Collider(Component):
     @property
     def num_of_points(self):
         return self._num_of_points
-
-
-
-

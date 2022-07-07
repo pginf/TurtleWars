@@ -91,7 +91,6 @@ class GameObject:
     def destroy(self):
         self.set_exist(False)
 
-
     @property
     def on_scale_change(self):
         return self._on_scale_change

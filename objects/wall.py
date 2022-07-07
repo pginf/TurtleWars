@@ -5,9 +5,7 @@ import pygame
 from core import GameObject
 
 import components
-from utils import Vector2D
 from core import GameObjectGroup
-from utils import Directions
 
 
 class Wall(GameObject):
@@ -29,8 +27,13 @@ class Wall(GameObject):
 
     def _on_collide(self):
         collisions_list = self._collide_with()
-        for obj in collisions_list:
-            print("wall", self, "collide with", obj)
+        for i in range(len(collisions_list)):
+            obj = collisions_list[i][0]
+            if collisions_list[i][1] is not None:
+                overlap_vector = obj.get_position() - self.get_position()
+                overlap_vector /= overlap_vector.length()
+                overlap_vector *= collisions_list[i][1]
+                obj.set_position(obj.get_position() + (overlap_vector * Game.instance().delta_time))
 
 
 if __name__ == "__main__":
@@ -72,5 +75,6 @@ if __name__ == "__main__":
     mca: MovementComponent = a.get_component(MovementComponent)
     mca.force_blow(Vector2D(-100, 100))
     mca.movement_friction = 0
+    mca.spin_blow(30)
 
     game.loop()
