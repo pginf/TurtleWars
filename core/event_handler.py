@@ -1,21 +1,21 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Dict, Type
 
 import pygame
 import core
 from core.event import Event
 
+
 class EventHandler:
-    _intance: EventHandler = None
+    _instance: EventHandler = None
 
     _on_mouse_press: Event[OnMousePressArgs] = Event()
     _on_keyboard_press: Event[OnKeyboardPressArgs] = Event()
 
     def __init__(self):
-        if not EventHandler._intance:
-            EventHandler._intance = self
+        if not EventHandler._instance:
+            EventHandler._instance = self
 
     @property
     def on_mouse_press(self):
@@ -34,7 +34,7 @@ class EventHandler:
     class OnKeyboardPressArgs:
         key_pressed: int
 
-    def hanlde_events(self):
+    def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 core.Game.instance().stop()
@@ -46,4 +46,4 @@ class EventHandler:
 
     @classmethod
     def get_instance(cls):
-        return cls._intance
+        return cls._instance

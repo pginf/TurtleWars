@@ -4,6 +4,7 @@ from typing import Type, Optional
 
 from core import GameObjectGroup
 import core.components_handler
+from core.event import Event
 from utils import Vector2D
 
 
@@ -14,6 +15,9 @@ class GameObject:
     _group: GameObjectGroup = GameObjectGroup.NONE
     _name: str = "New game object"
     _exist: bool
+    _on_scale_change: Event[Vector2D]
+    _on_rotation_change: Event[float]
+    _on_position_change: Event[Vector2D]
 
     _components_handler: core.components_handler.ComponentsHandler
 
@@ -23,6 +27,9 @@ class GameObject:
         self._scale = Vector2D(1, 1)
         self._rotation = 0
         self._exist = True
+        self._on_scale_change = Event()
+        self._on_rotation_change = Event()
+        self._on_position_change = Event()
 
     def add_component(self, component: Type[core.Component]):
         self._components_handler.add_component(component)
@@ -38,18 +45,21 @@ class GameObject:
 
     def set_position(self, position: Vector2D):
         self._position = position
+        self._on_position_change.invoke(position)
 
     def get_position(self):
         return self._position
 
     def set_scale(self, scale: Vector2D):
         self._scale = scale
+        self._on_scale_change.invoke(scale)
 
     def get_scale(self):
         return self._scale
 
     def set_rotation(self, rotation: float):
         self._rotation = rotation
+        self._on_rotation_change.invoke(rotation)
 
     def get_rotation(self):
         return self._rotation
@@ -81,3 +91,14 @@ class GameObject:
     def destroy(self):
         self.set_exist(False)
 
+    @property
+    def on_scale_change(self):
+        return self._on_scale_change
+
+    @property
+    def on_rotation_change(self):
+        return self._on_rotation_change
+
+    @property
+    def on_position_change(self):
+        return self._on_position_change

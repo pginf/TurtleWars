@@ -32,5 +32,3 @@ class Component(ABC):
 
     def activate(self):
         self._active = True
-
-

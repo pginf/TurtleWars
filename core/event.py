@@ -22,6 +22,10 @@ class Event(Generic[T]):
     def remove(self, subscriber: Callable[[T], Any]):
         self._subscribers.remove(subscriber)
 
+    def print_all_subscribers(self):
+        for sub in self._subscribers:
+            print(sub.__name__)
+
 
 if __name__ == "__main__":
     event: Event[str] = Event()
