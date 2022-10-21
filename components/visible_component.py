@@ -13,8 +13,8 @@ class VisibleComponent(Component):
     _CENTRE_SIZE = 1
     _DEFAULT_COLOR = pygame.Color(0, 255, 0)
     _main_window = MainWindow.get_instance()
-    _width = 50
-    _height = 50
+    _width: int = 50
+    _height: int = 50
     _sprite: pygame.sprite.Sprite
     _image: pygame.image
     _scale: Vector2D

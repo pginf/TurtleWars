@@ -11,15 +11,23 @@ from typing import List, Tuple
 
 class Wall(GameObject):
 
-    def __init__(self):
+    def __init__(self, w: int, h: int, x: int, y: int):
         super(Wall, self).__init__()
         self.add_component(components.VisibleComponent)
         self.add_component(components.Collider)
         self.set_group(GameObjectGroup.ENVIRONMENT)
         self.once = True
+        self.set_position(Vector2D(x, y))
+
         self.setup()
+
+        # setting up components
         col_c: Collider = self.get_component(components.Collider)
+        col_c.set_size(w)
         col_c.on_collision_enter.add(self._on_collide)
+
+        vis_c: VisibleComponent = self.get_component(components.VisibleComponent)
+        vis_c.set_size(Vector2D(w, h))
 
     def update(self):
         self._components_handler.update()
@@ -68,7 +76,7 @@ if __name__ == "__main__":
 
     game.game_objects.add_object_to_group(c)
 
-    b = Wall()
+    b = Wall(100, 100, 400, 300)
     b.set_name("o2")
     b.set_position(Vector2D(400, 300))
 
@@ -87,5 +95,8 @@ if __name__ == "__main__":
     mcc: MovementComponent = c.get_component(MovementComponent)
     mcc.force_blow(Vector2D(200, 0))
     mcc.movement_friction = 0
+    ccc: Collider = c.get_component(Collider)
+    ccc.set_size(50)
+    ccc.set_number_of_points(4)
 
     game.loop()

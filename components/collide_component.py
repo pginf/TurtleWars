@@ -18,6 +18,7 @@ from core.event import Event
 
 class Collider(Component):
     _num_of_points = 4  # for testing
+    _size: int = 50
     _points: List[Vector2D]
     _center: Vector2D
     _rotation: float
@@ -30,7 +31,7 @@ class Collider(Component):
     def setup(self):
         self._collision_list = []
         self._points = []
-        self._base_angle = radians(360 / (self.num_of_points * 2))
+        self._base_angle = radians(360 / (self._num_of_points * 2))
 
         # Adding publishers
         self._on_collision_enter = Event()
@@ -46,11 +47,12 @@ class Collider(Component):
         self._set_rotation(self.get_parent().get_rotation())
 
     def setup_points(self):
-        for i in range(self.num_of_points):
-            rot = radians((i * 360/self.num_of_points) + self.get_parent().get_rotation())
-            length = 50  # for testing
-            point_x = length * sin(self._base_angle + rot) + self._center.x
-            point_y = length * cos(self._base_angle + rot) + self._center.y
+        if self._points:
+            self._points.clear()
+        for i in range(self._num_of_points):
+            rot = radians((i * 360/self._num_of_points) + self.get_parent().get_rotation())
+            point_x = self._size/2 * math.sqrt(2) * sin(self._base_angle + rot) + self._center.x  # na potrzeby kwadratu
+            point_y = self._size/2 * math.sqrt(2) * cos(self._base_angle + rot) + self._center.y  # na potrzeby kwadratu
             point = Vector2D(point_x, point_y)
             self._points.append(point)
 
@@ -67,9 +69,9 @@ class Collider(Component):
 
     def _set_rotation(self, angle: float):
         self._rotation = angle
-        for i in range(self.num_of_points):
+        for i in range(self._num_of_points):
             point = self._points[i]
-            rot = radians((i * 360/self.num_of_points) + angle)
+            rot = radians((i * 360/self._num_of_points) + angle)
             length = point.distance(self._center)
             point.x = length * sin(self._base_angle + rot) + self._center.x
             point.y = length * cos(self._base_angle + rot) + self._center.y
@@ -103,9 +105,9 @@ class Collider(Component):
             for j in range(2):
                 if j == 1:
                     collider_a, collider_b = collider_b, collider_a
-                for i in range(collider_a.num_of_points):
+                for i in range(collider_a._num_of_points):
                     v1 = collider_a.get_points()[i]
-                    v2 = collider_a.get_points()[(i+1) % collider_a.num_of_points]
+                    v2 = collider_a.get_points()[(i+1) % collider_a._num_of_points]
 
                     edge = v2 - v1
                     axis = Vector2D(-edge.y, edge.x)
@@ -119,9 +121,9 @@ class Collider(Component):
         return None
 
     def _draw_collider(self):
-        for i in range(self.num_of_points):
+        for i in range(self._num_of_points):
             point_s = self._points[i]
-            point_e = self._points[(i + 1) % self.num_of_points]
+            point_e = self._points[(i + 1) % self._num_of_points]
             surface = MainWindow.get_instance().get_surface()
             pygame.draw.line(surface, 'RED', [point_s.x, point_s.y], [point_e.x, point_e.y], 3)
 
@@ -163,17 +165,26 @@ class Collider(Component):
         self._collider_visible = setting
 
     def get_size(self):
-        return self._num_of_points
+        return self._size
+
+    def set_size(self, size: int):
+        self._size = size
+        self.setup_points()
 
     def get_center(self):
         return self._center
 
+    def set_number_of_points(self, num_of_points: int):
+        self._num_of_points = num_of_points
+        self._base_angle = radians(360 / (self._num_of_points * 2))
+        self.setup_points()
+
+    def get_number_of_points(self):
+        return self._num_of_points
+
     def get_points(self):
         return self._points
 
-    @property
-    def num_of_points(self):
-        return self._num_of_points
 
     @property
     def on_collision_enter(self):
